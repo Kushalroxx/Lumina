@@ -7,16 +7,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 // Initialize clients outside the handler for reuse
-const SpeechClient = new Speech.SpeechClient();
-const vertexAI = new VertexAI({
-  project: process.env.GOOGLE_PROJECT_ID
-});
-const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 
 // --- Main Handler ---
 export async function POST(req: Request) {
-  try {
+    const SpeechClient = new Speech.SpeechClient();
+    const vertexAI = new VertexAI({
+      project: process.env.GOOGLE_PROJECT_ID
+    });
+    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    try {
     const formData = await req.formData();
     let message = formData.get("message")?.toString() || "";
     const url = formData.get("url")?.toString() || "";
@@ -113,6 +113,7 @@ export async function POST(req: Request) {
 
 async function transcribeAudio(audioFile: File): Promise<string> {
     try {
+        const SpeechClient = new Speech.SpeechClient();
         const [operation] = await SpeechClient.recognize({
           audio: {content: Buffer.from(await audioFile.arrayBuffer()).toString("base64")},
           config:{ encoding: "WEBM_OPUS", sampleRateHertz: 48000, languageCode: "en-US" }
@@ -191,6 +192,10 @@ function noContentFoundResponse(contentType: string) {
 }
 
 async function executeSummarization(content: string, task: string) {
+    const vertexAI = new VertexAI({
+      project: process.env.GOOGLE_PROJECT_ID
+    });
+    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     const prompt = `${task}\n\nCONTENT:\n"""\n${content.slice(0, 10000)}\n"""\n\nProvide the summary in the 'response' field of the JSON object.
     { "action": "summarize", "target": "text", "response": "<Your summary here>" }`;
     const result = await model.generateContent(prompt);
@@ -199,6 +204,10 @@ async function executeSummarization(content: string, task: string) {
 }
 
 async function formatListResponse(action: 'myFiles' | 'myClasses', files: any[], classrooms: any[]) {
+    const vertexAI = new VertexAI({
+      project: process.env.GOOGLE_PROJECT_ID
+    });
+    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     const data = action === 'myFiles'
         ? files.map(f => ({ name: f.name }))
         : classrooms.map(c => ({ name: c.name, subject: c.subject }));

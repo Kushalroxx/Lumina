@@ -4,16 +4,16 @@ import { VertexAI } from "@google-cloud/vertexai";
 import { Storage } from "@google-cloud/storage";
 
 // Initialize Google Cloud Storage
-const storage = new Storage({
-  projectId: process.env.GOOGLE_PROJECT_ID,
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-});
-
-const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET || 'lumina-lesson-images';
-const bucket = storage.bucket(bucketName);
 
 // Helper function to upload base64 image to Google Cloud Storage
 async function uploadBase64Image(base64Data: string, fileName: string): Promise<string> {
+  const storage = new Storage({
+    projectId: process.env.GOOGLE_PROJECT_ID,
+    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+  });
+  
+  const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET || 'lumina-lesson-images';
+  const bucket = storage.bucket(bucketName);
   try {
     const base64Image = base64Data.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Image, 'base64');
