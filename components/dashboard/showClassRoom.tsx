@@ -68,7 +68,7 @@ export default function ShowClassRoom({ classroomData }: { classroomData: classr
   const handleCopyClick = async () => {
     try {
 
-      await navigator.clipboard.writeText(`${process.env.NEXTAUTH_URL || 'https://lumina-950190429451.asia-south1.run.app/'}/api/classroom/join?id=${classroom.id}`);
+      await navigator.clipboard.writeText(`${process.env.NEXTAUTH_URL || 'https://lumina-950190429451.asia-south1.run.app'}/api/classroom/join?id=${classroom.id}`);
 
       setIsCopied(true);
 
