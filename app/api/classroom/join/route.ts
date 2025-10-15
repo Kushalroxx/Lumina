@@ -9,17 +9,17 @@ export async function GET(req: Request) {
         const id = url.searchParams.get('id');
         
         if (!id) {
-            return NextResponse.redirect(new URL('/dashboard', req.url));
+            return NextResponse.redirect('https://lumina-950190429451.asia-south1.run.app/dashboard');
         }
 
         const session = await getServerSession(authOptions);
         
         if (!session) {
-            return NextResponse.redirect(new URL('/auth/signin', req.url));
+            return NextResponse.redirect('https://lumina-950190429451.asia-south1.run.app/auth/signin');
         }
         
         if (session.user.role !== 'student') {
-            return NextResponse.redirect(new URL('/dashboard', req.url));
+            return NextResponse.redirect('https://lumina-950190429451.asia-south1.run.app/dashboard');
         }
 
         const classRoom = await prisma.classroom.findUnique({
@@ -28,13 +28,13 @@ export async function GET(req: Request) {
         });
 
         if (!classRoom) {
-            return NextResponse.redirect(new URL('/classroom/create', req.url));
+            return NextResponse.redirect('https://lumina-950190429451.asia-south1.run.app/classroom/create');
         }
 
         const isAlreadyEnrolled = classRoom.students.some((student) => student.id === session.user.id);
         
         if (isAlreadyEnrolled) {
-            return NextResponse.redirect(new URL(`/classroom/${classRoom.id}`, req.url));
+            return NextResponse.redirect(`https://lumina-950190429451.asia-south1.run.app/classroom/${classRoom.id}`);
         }
 
         const updatedClassRoom = await prisma.classroom.update({
@@ -46,10 +46,10 @@ export async function GET(req: Request) {
             }
         });
 
-        return NextResponse.redirect(new URL(`/classroom/${updatedClassRoom.id}`, req.url));
+        return NextResponse.redirect(`https://lumina-950190429451.asia-south1.run.app/classroom/${updatedClassRoom.id}`);
 
     } catch (error) {
         console.log('Join classroom error:', error);
-        return NextResponse.redirect(new URL('/dashboard?error=join_failed', req.url));
+        return NextResponse.redirect('https://lumina-950190429451.asia-south1.run.app/dashboard?error=join_failed');
     }
 }
