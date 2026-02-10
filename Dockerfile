@@ -11,12 +11,12 @@ RUN npm install
 
 COPY . .
 
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 RUN npx prisma generate
 
 RUN npm run build
 
 EXPOSE 8080
 ENV PORT=8080
-
 CMD ["npm", "start"]
 
